@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attraction List</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>Welcome to the Attraction List</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/attractions">Attractions</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<main>
+    <div class="container">
+        <h2>Attractions</h2>
+        <div class="attraction-list">
+            <div class="attraction-item" th:each="attraction : ${attractions}">
+                <div class="attraction-details">
+                    <h3 class="attraction-name" th:text="${attraction.name}">Name</h3>
+                    <p class="attraction-description" th:text="${attraction.description}">Description</p>
+                    <p class="attraction-city" th:text="${attraction.city}">City</p>
+                </div>
+                <div class="attraction-actions">
+                    <a class="action-button view-tags" th:href="@{/tags/{name}(name=${attraction.name})}">
+                        <span>View Tags</span>
+                    </a>
+                    <a class="action-button edit-attraction" th:href="@{'/' + ${attraction.name} + '/edit'}">
+                        <span>Edit</span>
+                    </a>
+                </div>
+            </div>
+            <a href="/add" class="action-button add-attraction"><span>Add Attraction</span></a>
+        </div>
+    </div>
+</main>
+<footer class="footer">
+    <div class="container">
+        <div>Email: example@example.com</div>
+        <div>Phone: 12-45-67-89</div>
+    </div>
+</footer>
+</body>
+</html>
