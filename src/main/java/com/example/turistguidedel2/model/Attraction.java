@@ -1,14 +1,19 @@
 package com.example.turistguidedel2.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Attraction {
     private String name;
     private String description;
     private String city;
-    private List<String> tags;
+    private List<Tags> tags;
 
-    public Attraction(String name, String description, String city, List<String> tags) {
+    public Attraction(){
+        tags = new ArrayList<>();
+    }
+
+    public Attraction(String name, String description, String city, List<Tags> tags) {
         this.name = name;
         this.description = description;
         this.city = city;
@@ -40,11 +45,11 @@ public class Attraction {
         this.city = city;
     }
 
-    public List<String> getTags() {
+    public List<Tags> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(List<Tags> tags) {
         this.tags = tags;
     }
 }

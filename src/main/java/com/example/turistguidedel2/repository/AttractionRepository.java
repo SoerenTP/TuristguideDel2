@@ -1,9 +1,11 @@
 package com.example.turistguidedel2.repository;
 
 import com.example.turistguidedel2.model.Attraction;
+import com.example.turistguidedel2.model.Tags;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Repository
@@ -12,25 +14,21 @@ public class AttractionRepository {
 
     public AttractionRepository() {
         attractions = new ArrayList<>();
-        List<String> eiffelTowerTags = new ArrayList<>();
-        eiffelTowerTags.add("Iconic");
-        eiffelTowerTags.add("Tower");
-        attractions.add(new Attraction("Eiffel Tower", "Iconic tower in Paris", "Paris", eiffelTowerTags));
+        attractions.add(new Attraction("Eiffel Tower", "Iconic tower in Paris", "Paris",
+                List.of(Tags.PAID)));
 
-        List<String> statueOfLibertyTags = new ArrayList<>();
-        statueOfLibertyTags.add("Iconic");
-        statueOfLibertyTags.add("Statue");
-        attractions.add(new Attraction("Statue of Liberty", "Iconic statue in America", "New York", statueOfLibertyTags));
+        attractions.add(new Attraction("Statue of Liberty", "Iconic statue in America", "New York",
+                List.of(Tags.FAMILY_FRIENDLY)));
     }
 
     public List<Attraction> getAllAttractions() {
         return attractions;
     }
 
-    public Attraction getAttractionByName(String name) {
-        for (Attraction attraction : attractions) {
-            if (attraction.getName().equals(name)) {
-                return attraction;
+    public Attraction getAttraction(String name) {
+        for(Attraction attract : attractions) {
+            if (attract.getName().equalsIgnoreCase(name)) {
+                return attract;
             }
         }
         return null;
@@ -40,14 +38,38 @@ public class AttractionRepository {
         attractions.add(attraction);
     }
 
-    public void updateAttraction(Attraction updatedAttraction) {
-        for (Attraction attraction : attractions) {
-            if (attraction.getName().equals(updatedAttraction.getName())) {
-                attraction.setDescription(updatedAttraction.getDescription());
-                attraction.setCity(updatedAttraction.getCity());
-                attraction.setTags(updatedAttraction.getTags());
-                return;
+    public Attraction updateAttraction(Attraction attraction) {
+        for(Attraction attrac : attractions) {
+            if(attrac.getName().equalsIgnoreCase(attraction.getName())) {
+                attrac.setCity(attraction.getCity());
+                attrac.setDescription(attraction.getDescription());
+                attrac.setTags(attraction.getTags());
+                return attrac;
             }
         }
+        return null;
+    }
+
+    public Attraction deleteAttraction(String name) {
+        for(Attraction attrac : attractions) {
+            if(attrac.getName().equalsIgnoreCase(name)) {
+                attractions.remove(attrac);
+                return attrac;
+            }
+        }
+        return null;
+    }
+
+    public List<Tags> getTagsByName(String name) {
+        for(Attraction attraction : attractions) {
+            if(attraction.getName().equalsIgnoreCase(name)) {
+                return attraction.getTags();
+            }
+        }
+        return null;
+    }
+
+    public List<Tags> getTags() {
+        return new ArrayList<>(List.of(Tags.values()));
     }
 }
