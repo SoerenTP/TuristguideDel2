@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attraction List</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<header>
+    <h1>Tourist Journeys</h1>
+</header>
 <main>
     <div class="container">
         <h2>Attractions</h2>
@@ -31,16 +34,16 @@
                             <li th:each="tag : ${attraction.tags}" th:text="${tag}">Tag 1</li>
                         </ul>
                     </td>
-                    <td>
+                    <td class="actions">
                         <a class="action-button" th:href="@{/attractions/{name}/tags(name=${attraction.name})}">
-                            <span>View Tags</span>
+                            View Tags
                         </a>
                         <a class="action-button" th:href="@{/attractions/{name}/edit(name=${attraction.name})}">
-                            <span>Edit</span>
+                            Edit
                         </a>
-                        <form th:action="@{/attractions/{name}/delete(name=${attraction.name})}" method="get">
-                            <button type="submit" class="action-button">Delete</button>
-                        </form>
+                        <a class="action-button delete-button" th:href="@{/attractions/{name}/delete(name=${attraction.name})}">
+                            Delete
+                        </a>
                     </td>
                 </tr>
                 </tbody>
@@ -49,5 +52,8 @@
         </div>
     </div>
 </main>
+<footer>
+    <p>&copy; 2024 Tourist Journeys. All rights reserved.</p>
+</footer>
 </body>
 </html>

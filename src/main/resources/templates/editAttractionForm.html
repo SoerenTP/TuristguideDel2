@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Attraction</title>
-    <link rel="stylesheet" href="editForm.css">
+    <title>Edit Attraction</title>
+    <link rel="stylesheet" href="/editforms.css">
 </head>
 <body>
+<div class="header">
+    <h1>Edit Attraction</h1>
+</div>
 <div class="container">
-    <div class="tags-header">
-        <h1>Edit Attraction</h1>
-    </div>
     <form th:action="@{/attractions/update}" th:method="post" th:object="${attraction}" autocomplete="off">
         <div class="form-group">
-            <input type="hidden" th:field="*{name}">
+            <label for="name">Name:</label>
+            <input type="text" id="name" th:field="*{name}" readonly>
         </div>
         <div class="form-group">
             <label for="description">Description:</label>
@@ -33,9 +34,9 @@
             <button type="submit">Save</button>
         </div>
     </form>
-    <div>
+    <footer class="footer">
         <a href="/attractions" class="back-link">Back to Attractions</a>
-    </div>
+    </footer>
 </div>
 </body>
 </html>

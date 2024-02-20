@@ -4,17 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attraction Tags</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/tagsforms.css">
 </head>
 <body>
+<header>
+    <h1 style="margin: 0;">Attraction Tags</h1>
+</header>
 <div class="container">
-    <h1>Attraction Tags</h1>
     <h2>Tags for Attraction: <span th:text="${name}"></span></h2>
-    <ul class="list-group">
-        <li class="list-group-item" th:each="tag : ${tags}" th:text="${tag.name}"></li>
+    <ul>
+        <li th:each="tag : ${tags}" th:text="${tag.name}"></li>
     </ul>
-    <a href="/attractions" class="btn btn-primary mt-3">Back to Attractions</a>
+    <div class="center">
+        <a href="/attractions" class="btn">Back to Attractions</a>
+    </div>
 </div>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<footer>
+    <p>&copy; 2024 TouristJourneys</p>
+</footer>
 </body>
 </html>
