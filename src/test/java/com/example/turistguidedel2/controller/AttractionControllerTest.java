@@ -58,10 +58,11 @@ public class AttractionControllerTest {
         List<Tags> tags = new ArrayList<>();
         when(attractionRepository.getTags()).thenReturn(tags);
 
+        Attraction expectedAttraction = new Attraction();
         String viewName = attractionController.showAddAttractionForm(model);
 
         assertEquals("addAttractionForm", viewName);
-        verify(model).addAttribute("Den Lille Havfrue", new Attraction());
+        verify(model).addAttribute(eq("attraction"), any(Attraction.class));
         verify(model).addAttribute("tags", tags);
     }
 
