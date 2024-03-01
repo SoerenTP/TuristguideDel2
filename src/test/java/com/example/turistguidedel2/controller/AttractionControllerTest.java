@@ -61,7 +61,7 @@ public class AttractionControllerTest {
         String viewName = attractionController.showAddAttractionForm(model);
 
         assertEquals("addAttractionForm", viewName);
-        verify(model).addAttribute("attraction", new Attraction());
+        verify(model).addAttribute("Den Lille Havfrue", new Attraction());
         verify(model).addAttribute("tags", tags);
     }
 
