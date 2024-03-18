@@ -22,6 +22,10 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
+        env:
+          JDBC_URL: ${{ secrets.JBDC_URL }}
+          JDBC_USERNAME: ${{ secrets.JBDC_USERNAME }}
+          JDBC_PASSWORD: ${{ secrets.JBDC_PASSWORD }}
         run: mvn clean install
 
       - name: Upload artifact for deployment job
