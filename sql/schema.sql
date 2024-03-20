@@ -5,6 +5,7 @@ CREATE TABLE attraction (
     attraction_id INT AUTO_INCREMENT,
     name VARCHAR(150) NOT NULL,
     description VARCHAR(500) NOT NULL,
+    city VARCHAR(500) NOT NULL,
     PRIMARY KEY (attraction_id),
 );
 
