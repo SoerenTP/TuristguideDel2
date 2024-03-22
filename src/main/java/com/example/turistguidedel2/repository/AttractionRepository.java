@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository
 public class AttractionRepository {
-    private List<Attraction> attractions;
-/*
+    private final List<Attraction> attractions;
+
     public AttractionRepository() {
         attractions = new ArrayList<>();
         attractions.add(new Attraction("Eiffel Tower", "Iconic tower in Paris", "Paris",
@@ -19,7 +19,7 @@ public class AttractionRepository {
 
         attractions.add(new Attraction("Statue of Liberty", "Iconic statue in America", "New York",
                 List.of(Tags.FAMILY_FRIENDLY)));
-    }*/
+    }
 
     public List<Attraction> getAllAttractions() {
         return attractions;
