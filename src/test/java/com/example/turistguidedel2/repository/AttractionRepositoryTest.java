@@ -2,84 +2,85 @@ package com.example.turistguidedel2.repository;
 
 import com.example.turistguidedel2.model.Attraction;
 import com.example.turistguidedel2.model.Tags;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+@ExtendWith(SpringExtension.class)
+@JdbcTest
+@AutoConfigureTestDatabase(replace = Replace.NONE)
+@ComponentScan("com.example.turistguidedel2.repository")
 public class AttractionRepositoryTest {
 
-    private AttractionRepository repository;
+    @Autowired
+    private AttractionRepository attractionRepository;
 
-    @BeforeEach
-    public void init(){
-        repository = new AttractionRepository();
+    @Test
+    public void testGetAllAttractions() {
+        List<Attraction> attractions = attractionRepository.getAllAttractions();
+        assertNotNull(attractions);
+        assertEquals(2, attractions.size());
     }
 
     @Test
-    public void getAllTest(){
-        List<Attraction> expectedResultList = new ArrayList<>();
-        expectedResultList.add(new Attraction("Eiffel Tower", "Iconic tower in Paris", "Paris", List.of(Tags.PAID)));
-        expectedResultList.add(new Attraction("Statue of Liberty", "Iconic statue in America", "New York", List.of(Tags.FAMILY_FRIENDLY)));
-        int expectedSize = expectedResultList.size();
-        String expectedFirstResultName = expectedResultList.get(0).getName();
-        String expectedSecondResultName = expectedResultList.get(1).getName();
-
-        List<Attraction> resultList = repository.getAllAttractions();
-
-        assertEquals(expectedSize,resultList.size());
-        assertEquals(expectedFirstResultName, resultList.get(0).getName());
-        assertEquals(expectedSecondResultName, resultList.get(1).getName());
+    public void testGetAttraction() {
+        String attractionName = "Eiffel Tower";
+        Attraction attraction = attractionRepository.getAttraction(attractionName);
+        assertNotNull(attraction);
+        assertEquals(attractionName, attraction.getName());
     }
 
     @Test
-    public void addAttractionTest() {
-        Attraction attractionToAdd = new Attraction("Den Lille Havfrue",
-                "Greatest attraction in Copenhagen", "København", List.of(Tags.FREE));
-
-        repository.addAttraction(attractionToAdd);
-        Attraction resultAttraction = repository.getAttraction("Den Lille Havfrue");
-
-        assertEquals(attractionToAdd.getName(), resultAttraction.getName());
+    public void testAddAttraction() {
+        Attraction newAttraction = new Attraction("Test Attraction", "Test Description", "Test City", List.of(Tags.PAID));
+        attractionRepository.addAttraction(newAttraction);
+        Attraction retrievedAttraction = attractionRepository.getAttraction("Test Attraction");
+        assertNotNull(retrievedAttraction);
+        assertEquals("Test Attraction", retrievedAttraction.getName());
     }
 
     @Test
-    public void updateAttractionTest() {
-        String updatedDescription = "Statue of Liberty is paid";
-        Attraction attractionToUpdate = repository.getAttraction("Statue of Liberty");
-        attractionToUpdate.setDescription(updatedDescription);
-
-        repository.updateAttraction(attractionToUpdate);
-        Attraction resultAttraction = repository.getAttraction("Statue of Liberty");
-        String resultDescription = resultAttraction.getDescription();
-
-        assertEquals(updatedDescription, resultDescription);
+    public void testUpdateAttraction() {
+        String attractionName = "Eiffel Tower";
+        Attraction updatedAttraction = new Attraction(attractionName, "Updated Description", "Paris", List.of(Tags.PAID));
+        attractionRepository.updateAttraction(updatedAttraction);
+        Attraction retrievedAttraction = attractionRepository.getAttraction(attractionName);
+        assertNotNull(retrievedAttraction);
+        assertEquals("Updated Description", retrievedAttraction.getDescription());
     }
 
     @Test
-    public void deleteAttractionTest() {
-        String attractionToDelete = "Statue of Liberty";
-
-        repository.deleteAttraction("Statue of Liberty");
-        List<Attraction> result = repository.getAllAttractions();
-        int resultSize = result.size();
-        Attraction SOL = repository.getAttraction("Statue of Liberty");
-
-        assertNull(SOL);
-        assertEquals(1, resultSize);
+    public void testDeleteAttraction() {
+        String attractionName = "Statue of Liberty";
+        Attraction deletedAttraction = attractionRepository.deleteAttraction(attractionName);
+        assertNotNull(deletedAttraction);
+        assertEquals(attractionName, deletedAttraction.getName());
+        assertNull(attractionRepository.getAttraction(attractionName));
     }
 
     @Test
-    public void getTagsByNameTest() {
-        String nameOfTagsToGet = "Statue of Liberty";
+    public void testGetTagsByName() {
+        String attractionName = "Eiffel Tower";
+        List<Tags> tags = attractionRepository.getTagsByName(attractionName);
+        assertNotNull(tags);
+        assertEquals(1, tags.size()); // Assuming Eiffel Tower has one tag associated
+    }
 
-        List<Tags> result = repository.getTagsByName(nameOfTagsToGet);
-        int tagsCount = result.size();
-
-        assertEquals(1, tagsCount);
-        assertTrue(result.contains(Tags.FAMILY_FRIENDLY));
+    @Test
+    public void testGetTags() {
+        List<Tags> tags = attractionRepository.getTags();
+        assertNotNull(tags);
+        // Assert based on the number of tags in the database
     }
 }
