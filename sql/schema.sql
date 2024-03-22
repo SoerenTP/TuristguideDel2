@@ -1,12 +1,12 @@
-CREATE DATABASE IF NOT EXISTS turist_guide;
-USE turist_guide;
+CREATE DATABASE IF NOT EXISTS tourist_guide;
+USE tourist_guide;
 
 CREATE TABLE attraction (
     attraction_id INT AUTO_INCREMENT,
     name VARCHAR(150) NOT NULL,
     description VARCHAR(500) NOT NULL,
     city VARCHAR(500) NOT NULL,
-    PRIMARY KEY (attraction_id),
+    PRIMARY KEY (attraction_id)
 );
 
 CREATE TABLE tag (
@@ -20,4 +20,4 @@ CREATE TABLE attraction_tags (
     tag_id INT NOT NULL,
     FOREIGN KEY (attraction_id) REFERENCES attraction(attraction_id),
     FOREIGN KEY (tag_id) REFERENCES tag(tag_id)
-)
+);

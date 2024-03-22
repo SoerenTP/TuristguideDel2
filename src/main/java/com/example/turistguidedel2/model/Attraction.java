@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Attraction {
+    private int id;
     private String name;
     private String description;
     private String city;
@@ -51,5 +52,13 @@ public class Attraction {
 
     public void setTags(List<Tags> tags) {
         this.tags = tags;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
