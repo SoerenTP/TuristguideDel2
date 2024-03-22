@@ -92,11 +92,11 @@ public class AttractionRepository {
             if (generatedKeys.next()) {
                 attractionId = generatedKeys.getInt(1);
 
-                for (String tag : attraction.getTags()) {
+                for (Tags tag : attraction.getTags()) {
                     SQL = "INSERT INTO attraction_tags(attraction_id, tag_id) VALUES (?, ?);";
                     ps = connection.prepareStatement(SQL);
                     ps.setInt(1, attractionId);
-                    ps.setInt(2, getTagIdFromName(tag));
+                    ps.setInt(2, getTagIdFromName(String.valueOf(tag)));
                     ps.executeUpdate();
                 }
             }
@@ -126,11 +126,11 @@ public class AttractionRepository {
 
             // Add updated tags
             int attractionId = getAttractionIdFromName(attraction.getName());
-            for (String tag : attraction.getTags()) {
+            for (Tags tag : attraction.getTags()) {
                 SQL = "INSERT INTO attraction_tags(attraction_id, tag_id) VALUES (?, ?);";
                 ps = connection.prepareStatement(SQL);
                 ps.setInt(1, attractionId);
-                ps.setInt(2, getTagIdFromName(tag));
+                ps.setInt(2, getTagIdFromName(String.valueOf(tag)));
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
