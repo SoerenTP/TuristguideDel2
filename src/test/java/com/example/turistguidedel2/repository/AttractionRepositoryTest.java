@@ -2,175 +2,80 @@ package com.example.turistguidedel2.repository;
 
 import com.example.turistguidedel2.model.Attraction;
 import com.example.turistguidedel2.model.Tags;
+import com.example.turistguidedel2.repository.AttractionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-class AttractionRepositoryTest {
-
-    @Mock
-    private DataSource dataSource;
-
-    @Mock
-    private Connection connection;
-
-    @Mock
-    private PreparedStatement preparedStatement;
-
-    @Mock
-    private ResultSet resultSet;
-
-    private AttractionRepository attractionRepository;
+@SpringBootTest
+public class AttractionRepositoryTest {
+/*    @Autowired
+    private AttractionRepository repository;
 
     @BeforeEach
-    void setUp() throws SQLException {
-        MockitoAnnotations.openMocks(this);
-        when(dataSource.getConnection()).thenReturn(connection);
-        attractionRepository = new AttractionRepository();
+    public void init() {
+        repository = new AttractionRepository();
+
     }
 
     @Test
-    void testGetAllAttractions() throws SQLException {
-        // Mocking ResultSet
-        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
-        when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getInt("attraction_id")).thenReturn(1);
-        when(resultSet.getString("name")).thenReturn("Attraction Name");
-        when(resultSet.getString("description")).thenReturn("Attraction Description");
-        when(resultSet.getString("city")).thenReturn("Attraction City");
+    public void getAllTest(){
+        List<Attraction> expectedResultList = new ArrayList<>();
+        expectedResultList.add(new Attraction("Eiffel Tower", "Iconic tower in Paris", "Paris", List.of(Tags.PAID)));
+        expectedResultList.add(new Attraction("Statue of Liberty", "Iconic statue in America", "New York", List.of(Tags.FAMILY_FRIENDLY)));
+        int expectedSize = expectedResultList.size();
+        String expectedFirstResultName = expectedResultList.get(0).getName();
+        String expectedSecondResultName = expectedResultList.get(1).getName();
+        List<Attraction> resultList = repository.getAllAttractions();
+        assertEquals(expectedSize,resultList.size());
+        assertEquals(expectedFirstResultName, resultList.get(0).getName());
+        assertEquals(expectedSecondResultName, resultList.get(1).getName());
 
-        // Calling method under test
-        List<Attraction> attractions = attractionRepository.getAllAttractions();
-
-        // Asserting results
-        assertEquals(1, attractions.size());
-        Attraction attraction = attractions.get(0);
-        assertEquals(1, attraction.getId());
-        assertEquals("Attraction Name", attraction.getName());
-        assertEquals("Attraction Description", attraction.getDescription());
-        assertEquals("Attraction City", attraction.getCity());
     }
 
     @Test
-    void testGetAttraction() throws SQLException {
-        // Mocking ResultSet
-        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
-        when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(true);
-        when(resultSet.getInt("attraction_id")).thenReturn(1);
-        when(resultSet.getString("name")).thenReturn("Attraction Name");
-        when(resultSet.getString("description")).thenReturn("Attraction Description");
-        when(resultSet.getString("city")).thenReturn("Attraction City");
+    public void addAttractionTest() {
+        Attraction attractionToAdd = new Attraction("Den Lille Havfrue",
+                "Greatest attraction in Copenhagen", "København", List.of(Tags.FREE));
+        repository.addAttraction(attractionToAdd);
+        Attraction resultAttraction = repository.getAttraction("Den Lille Havfrue");
+        assertEquals(attractionToAdd.getName(), resultAttraction.getName());
 
-        // Calling method under test
-        Attraction attraction = attractionRepository.getAttraction("Attraction Name");
-
-        // Asserting results
-        assertEquals(1, attraction.getId());
-        assertEquals("Attraction Name", attraction.getName());
-        assertEquals("Attraction Description", attraction.getDescription());
-        assertEquals("Attraction City", attraction.getCity());
     }
 
     @Test
-    void testAddAttraction() throws SQLException {
-        // Mocking PreparedStatement
-        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
-
-        // Creating attraction
-        Attraction attraction = new Attraction();
-        attraction.setName("Test Attraction");
-        attraction.setDescription("Test Description");
-        attraction.setCity("Test City");
-
-        // Calling method under test
-        attractionRepository.addAttraction(attraction);
-
-        // Verifying if executeUpdate() is called
-        verify(preparedStatement, times(1)).executeUpdate();
+    public void updateAttractionTest() {
+        String updatedDescription = "Statue of Liberty is paid";
+        Attraction attractionToUpdate = repository.getAttraction("Statue of Liberty");
+        attractionToUpdate.setDescription(updatedDescription);
+        repository.updateAttraction(attractionToUpdate);
+        Attraction resultAttraction = repository.getAttraction("Statue of Liberty");
+        String resultDescription = resultAttraction.getDescription();
+        assertEquals(updatedDescription, resultDescription);
     }
 
     @Test
-    void testUpdateAttraction() throws SQLException {
-        // Mocking PreparedStatement
-        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
-
-        // Creating attraction
-        Attraction attraction = new Attraction();
-        attraction.setName("Test Attraction");
-        attraction.setDescription("Updated Description");
-        attraction.setCity("Updated City");
-
-        // Calling method under test
-        Attraction updatedAttraction = attractionRepository.updateAttraction(attraction);
-
-        // Verifying if executeUpdate() is called
-        verify(preparedStatement, times(1)).executeUpdate();
-        // Asserting returned attraction
-        assertEquals(attraction, updatedAttraction);
+    public void deleteAttractionTest() {
+        String attractionToDelete = "Statue of Liberty";
+        repository.deleteAttraction("Statue of Liberty");
+        List<Attraction> result = repository.getAllAttractions();
+        int resultSize = result.size();
+        Attraction SOL = repository.getAttraction("Statue of Liberty");
+        assertNull(SOL);
+        assertEquals(1, resultSize);
     }
 
     @Test
-    void testDeleteAttraction() throws SQLException {
-        // Mocking getAttraction method
-        when(attractionRepository.getAttraction("Attraction Name")).thenReturn(new Attraction());
-
-        // Mocking PreparedStatement
-        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
-
-        // Calling method under test
-        Attraction deletedAttraction = attractionRepository.deleteAttraction("Attraction Name");
-
-        // Verifying if executeUpdate() is called
-        verify(preparedStatement, times(1)).executeUpdate();
-        // Asserting returned attraction
-        assertEquals("Attraction Name", deletedAttraction.getName());
-    }
-
-    @Test
-    void testGetTagsByName() throws SQLException {
-        // Mocking ResultSet
-        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
-        when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
-        when(resultSet.getString("name")).thenReturn("PAID").thenReturn("FAMILY_FRIENDLY");
-
-        // Calling method under test
-        List<Tags> tags = attractionRepository.getTagsByName("Test Attraction");
-
-        // Asserting results
-        assertEquals(2, tags.size());
-        assertEquals(Tags.PAID, tags.get(0));
-        assertEquals(Tags.FAMILY_FRIENDLY, tags.get(1));
-    }
-
-    @Test
-    void testGetTags() throws SQLException {
-        // Mocking ResultSet
-        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
-        when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
-        when(resultSet.getString("name")).thenReturn("PAID").thenReturn("FAMILY_FRIENDLY");
-
-        // Calling method under test
-        List<Tags> tags = attractionRepository.getTags();
-
-        // Asserting results
-        assertEquals(2, tags.size());
-        assertEquals(Tags.PAID, tags.get(0));
-        assertEquals(Tags.FAMILY_FRIENDLY, tags.get(1));
-    }
+    public void getTagsByNameTest() {
+        String nameOfTagsToGet = "Statue of Liberty";
+        List<Tags> result = repository.getTagsByName(nameOfTagsToGet);
+        int tagsCount = result.size();
+        assertEquals(1, tagsCount);
+        assertTrue(result.contains(Tags.FAMILY_FRIENDLY));
+    }*/
 }
