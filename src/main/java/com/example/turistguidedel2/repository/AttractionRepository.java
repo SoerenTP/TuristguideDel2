@@ -19,11 +19,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AttractionRepository {
     @Value("${spring.datasource.url}")
-    private String db_url;
+    private String JBDC_URL;
     @Value("${spring.datasource.username}")
-    private String user;
+    private String JBDC_USERNAME;
     @Value("${spring.datasource.password}")
-    private String pass;
+    private String JBDC_PASSWORD;
 
     @Autowired
     private DataSource dataSource;
