@@ -131,7 +131,7 @@ public class AttractionRepository {
         }
         return tags;
     }
-
+// TAGS
     public List<Tags> getTags() {
         String sql = "SELECT * FROM tag";
         List<Tags> tags = new ArrayList<>();
