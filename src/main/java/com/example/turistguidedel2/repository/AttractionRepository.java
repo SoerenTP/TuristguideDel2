@@ -28,8 +28,6 @@ public class AttractionRepository {
     @Autowired
     private DataSource dataSource;
 
-
-
     public List<Attraction> getAllAttractions() {
         String sql = "SELECT * FROM attraction";
         List<Attraction> attractions = new ArrayList<>();
