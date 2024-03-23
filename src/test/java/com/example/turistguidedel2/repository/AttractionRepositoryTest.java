@@ -17,7 +17,7 @@ public class AttractionRepositoryTest {
     @Autowired
     private AttractionRepository repository;
 
-    @BeforeEach
+    /*@BeforeEach
     public void init(){
         repository = new AttractionRepository();
     }
