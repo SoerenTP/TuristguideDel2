@@ -21,3 +21,10 @@ CREATE TABLE attraction_tags (
     FOREIGN KEY (attraction_id) REFERENCES attraction(attraction_id),
     FOREIGN KEY (tag_id) REFERENCES tag(tag_id)
 );
+INSERT INTO attraction (name, description, city) VALUES ('Test Attraction', 'Test Description', 'Test City');
+
+INSERT INTO attraction_tags (attraction_id, tag_id)
+SELECT a.attraction_id, t.tag_id
+FROM attraction a
+         CROSS JOIN tag t
+WHERE a.name = 'Test Attraction' AND t.name IN ('PAID', 'FAMILY_FRIENDLY');

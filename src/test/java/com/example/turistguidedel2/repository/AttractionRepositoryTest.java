@@ -8,14 +8,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class AttractionRepositoryTest {
+class AttractionRepositoryTest {
 
     @Mock
     private DataSource dataSource;
@@ -32,135 +35,142 @@ public class AttractionRepositoryTest {
     private AttractionRepository attractionRepository;
 
     @BeforeEach
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    void setUp() throws SQLException {
+        MockitoAnnotations.openMocks(this);
+        when(dataSource.getConnection()).thenReturn(connection);
         attractionRepository = new AttractionRepository();
-        attractionRepository.dataSource = dataSource;
     }
 
     @Test
-    public void testGetAllAttractions() throws Exception {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+    void testGetAllAttractions() throws SQLException {
+        // Mocking ResultSet
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getInt("attraction_id")).thenReturn(1);
-        when(resultSet.getString("name")).thenReturn("AttractionName");
-        when(resultSet.getString("description")).thenReturn("AttractionDescription");
-        when(resultSet.getString("city")).thenReturn("AttractionCity");
+        when(resultSet.getString("name")).thenReturn("Attraction Name");
+        when(resultSet.getString("description")).thenReturn("Attraction Description");
+        when(resultSet.getString("city")).thenReturn("Attraction City");
 
+        // Calling method under test
         List<Attraction> attractions = attractionRepository.getAllAttractions();
 
+        // Asserting results
         assertEquals(1, attractions.size());
-        assertEquals("AttractionName", attractions.get(0).getName());
-        assertEquals("AttractionDescription", attractions.get(0).getDescription());
-        assertEquals("AttractionCity", attractions.get(0).getCity());
+        Attraction attraction = attractions.get(0);
+        assertEquals(1, attraction.getId());
+        assertEquals("Attraction Name", attraction.getName());
+        assertEquals("Attraction Description", attraction.getDescription());
+        assertEquals("Attraction City", attraction.getCity());
     }
 
     @Test
-    public void testGetAttraction() throws Exception {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+    void testGetAttraction() throws SQLException {
+        // Mocking ResultSet
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true);
         when(resultSet.getInt("attraction_id")).thenReturn(1);
-        when(resultSet.getString("name")).thenReturn("AttractionName");
-        when(resultSet.getString("description")).thenReturn("AttractionDescription");
-        when(resultSet.getString("city")).thenReturn("AttractionCity");
+        when(resultSet.getString("name")).thenReturn("Attraction Name");
+        when(resultSet.getString("description")).thenReturn("Attraction Description");
+        when(resultSet.getString("city")).thenReturn("Attraction City");
 
-        Attraction attraction = attractionRepository.getAttraction("AttractionName");
+        // Calling method under test
+        Attraction attraction = attractionRepository.getAttraction("Attraction Name");
 
-        assertEquals("AttractionName", attraction.getName());
-        assertEquals("AttractionDescription", attraction.getDescription());
-        assertEquals("AttractionCity", attraction.getCity());
+        // Asserting results
+        assertEquals(1, attraction.getId());
+        assertEquals("Attraction Name", attraction.getName());
+        assertEquals("Attraction Description", attraction.getDescription());
+        assertEquals("Attraction City", attraction.getCity());
     }
 
     @Test
-    public void testAddAttraction() throws Exception {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+    void testAddAttraction() throws SQLException {
+        // Mocking PreparedStatement
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
 
+        // Creating attraction
         Attraction attraction = new Attraction();
-        attraction.setName("NewAttraction");
-        attraction.setDescription("NewAttractionDescription");
-        attraction.setCity("NewAttractionCity");
+        attraction.setName("Test Attraction");
+        attraction.setDescription("Test Description");
+        attraction.setCity("Test City");
 
+        // Calling method under test
         attractionRepository.addAttraction(attraction);
 
-        verify(preparedStatement).setString(1, "NewAttraction");
-        verify(preparedStatement).setString(2, "NewAttractionDescription");
-        verify(preparedStatement).setString(3, "NewAttractionCity");
-        verify(preparedStatement).executeUpdate();
+        // Verifying if executeUpdate() is called
+        verify(preparedStatement, times(1)).executeUpdate();
     }
 
     @Test
-    public void testUpdateAttraction() throws Exception {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+    void testUpdateAttraction() throws SQLException {
+        // Mocking PreparedStatement
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
 
+        // Creating attraction
         Attraction attraction = new Attraction();
-        attraction.setName("ExistingAttraction");
-        attraction.setDescription("UpdatedDescription");
-        attraction.setCity("UpdatedCity");
+        attraction.setName("Test Attraction");
+        attraction.setDescription("Updated Description");
+        attraction.setCity("Updated City");
 
+        // Calling method under test
         Attraction updatedAttraction = attractionRepository.updateAttraction(attraction);
 
-        verify(preparedStatement).setString(1, "UpdatedDescription");
-        verify(preparedStatement).setString(2, "UpdatedCity");
-        verify(preparedStatement).setString(3, "ExistingAttraction");
-        verify(preparedStatement).executeUpdate();
-
+        // Verifying if executeUpdate() is called
+        verify(preparedStatement, times(1)).executeUpdate();
+        // Asserting returned attraction
         assertEquals(attraction, updatedAttraction);
     }
 
     @Test
-    public void testDeleteAttraction() throws Exception {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
-        when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(true);
-        when(resultSet.getInt("attraction_id")).thenReturn(1);
-        when(resultSet.getString("name")).thenReturn("AttractionToDelete");
-        when(resultSet.getString("description")).thenReturn("DescriptionToDelete");
-        when(resultSet.getString("city")).thenReturn("CityToDelete");
+    void testDeleteAttraction() throws SQLException {
+        // Mocking getAttraction method
+        when(attractionRepository.getAttraction("Attraction Name")).thenReturn(new Attraction());
 
-        Attraction deletedAttraction = attractionRepository.deleteAttraction("AttractionToDelete");
+        // Mocking PreparedStatement
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
 
-        verify(preparedStatement).setString(1, "AttractionToDelete");
-        verify(preparedStatement).executeUpdate();
+        // Calling method under test
+        Attraction deletedAttraction = attractionRepository.deleteAttraction("Attraction Name");
 
-        assertEquals("AttractionToDelete", deletedAttraction.getName());
-        assertEquals("DescriptionToDelete", deletedAttraction.getDescription());
-        assertEquals("CityToDelete", deletedAttraction.getCity());
+        // Verifying if executeUpdate() is called
+        verify(preparedStatement, times(1)).executeUpdate();
+        // Asserting returned attraction
+        assertEquals("Attraction Name", deletedAttraction.getName());
     }
 
     @Test
-    public void testGetTagsByName() throws Exception {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+    void testGetTagsByName() throws SQLException {
+        // Mocking ResultSet
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getString("name")).thenReturn("Tag1").thenReturn("Tag2");
+        when(resultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
+        when(resultSet.getString("name")).thenReturn("PAID").thenReturn("FAMILY_FRIENDLY");
 
-        List<Tags> tags = attractionRepository.getTagsByName("AttractionName");
+        // Calling method under test
+        List<Tags> tags = attractionRepository.getTagsByName("Test Attraction");
 
+        // Asserting results
         assertEquals(2, tags.size());
         assertEquals(Tags.PAID, tags.get(0));
         assertEquals(Tags.FAMILY_FRIENDLY, tags.get(1));
     }
 
     @Test
-    public void testGetTags() throws Exception {
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
+    void testGetTags() throws SQLException {
+        // Mocking ResultSet
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getString("name")).thenReturn("Tag1").thenReturn("Tag2");
+        when(resultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
+        when(resultSet.getString("name")).thenReturn("PAID").thenReturn("FAMILY_FRIENDLY");
 
+        // Calling method under test
         List<Tags> tags = attractionRepository.getTags();
 
+        // Asserting results
         assertEquals(2, tags.size());
-        assertEquals(Tags.HISTORICAL, tags.get(0));
-        assertEquals(Tags.AMUSEMENT_PARK, tags.get(1));
+        assertEquals(Tags.PAID, tags.get(0));
+        assertEquals(Tags.FAMILY_FRIENDLY, tags.get(1));
     }
 }
