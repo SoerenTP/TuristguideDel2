@@ -84,5 +84,5 @@ public class AttractionRepositoryTest {
 
         assertEquals(1, tagsCount);
         assertTrue(result.contains(Tags.FAMILY_FRIENDLY));
-    }
+    }*/
 }
