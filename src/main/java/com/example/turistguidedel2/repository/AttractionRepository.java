@@ -26,7 +26,7 @@ public class AttractionRepository {
     private String pass;
 
     @Autowired
-    private DataSource dataSource;
+    DataSource dataSource;
 
 
 
