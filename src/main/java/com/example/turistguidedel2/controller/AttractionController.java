@@ -16,7 +16,7 @@ import java.util.List;
 public class AttractionController {
 
     private final AttractionRepository attractionRepository;
-
+    //Autowired
     @Autowired
     public AttractionController(AttractionRepository attractionRepository) {
         this.attractionRepository = attractionRepository;
