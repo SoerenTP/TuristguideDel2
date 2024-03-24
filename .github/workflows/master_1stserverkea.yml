@@ -51,3 +51,7 @@ jobs:
           slot-name: 'Production'
           package: '*.jar'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0D0EAAE90277450E8F55F7534FD71F65 }}
+        env:
+          JDBC_URL: ${{secrets.JDBC_URL}}
+          JDBC_USERNAME: ${{secrets.JDBC_USERNAME}}
+          JDBC_PASSWORD: ${{secrets.JDBC_PASSWORD}}
