@@ -19,15 +19,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AttractionRepository {
     @Value("${spring.datasource.url}")
-    private String JBDC_URL;
+    private String JDBC_URL;
     @Value("${spring.datasource.username}")
-    private String JBDC_USERNAME;
+    private String JDBC_USERNAME;
     @Value("${spring.datasource.password}")
-    private String JBDC_PASSWORD;
+    private String JDBC_PASSWORD;
 
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
+    public AttractionRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+    // DAMN
     public List<Attraction> getAllAttractions() {
         String sql = "SELECT * FROM attraction";
         List<Attraction> attractions = new ArrayList<>();
