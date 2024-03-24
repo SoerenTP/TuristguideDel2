@@ -30,7 +30,7 @@ public class AttractionRepository {
     public AttractionRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    // DAMN
+    // DAMN det funger
     public List<Attraction> getAllAttractions() {
         String sql = "SELECT * FROM attraction";
         List<Attraction> attractions = new ArrayList<>();
